@@ -1,45 +1,37 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import { Overlay, ModalWindow } from './Modal.styled';
 import PropTypes from 'prop-types';
 
-class Modal extends Component {
-  componentDidMount() {
-    console.log('Modal componentDidMount');
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
+export default function Modal({ onClose, fullImage }) {
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  });
 
-  componentWillUnmount() {
-    console.log('Modal componentWillUnmount');
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  handleBackdropClick = event => {
-    if (event.currentTarget === event.target) {
-      this.props.onClose();
-    }
-  };
-
-  handleKeyDown = event => {
+  const handleKeyDown = event => {
     if (event.code === 'Escape') {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  render() {
-    const { fullImage } = this.props;
-    return (
-      <Overlay onClick={this.handleBackdropClick}>
-        <ModalWindow>
-          <img src={fullImage.largeImageURL} alt={fullImage.tags} />
-        </ModalWindow>
-      </Overlay>
-    );
-  }
+  const handleBackdropClick = event => {
+    if (event.currentTarget === event.target) {
+      onClose();
+    }
+  };
+
+  return (
+    <Overlay onClick={handleBackdropClick}>
+      <ModalWindow>
+        <img src={fullImage.largeImageURL} alt={fullImage.tags} />
+      </ModalWindow>
+    </Overlay>
+  );
 }
 
 Overlay.propTypes = {
   fullImage: PropTypes.object,
   onClose: PropTypes.func,
 };
-
-export default Modal;
