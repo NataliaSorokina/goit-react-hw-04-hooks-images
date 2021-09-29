@@ -48,7 +48,7 @@ export default function App() {
   useEffect(() => {
     async function getImages() {
       try {
-        if (searchQuery === '') {
+        if (searchQuery.trim() === '') {
           return;
         }
         setSearchStatus('pending');
